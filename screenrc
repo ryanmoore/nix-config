@@ -1,0 +1,14 @@
+#escape ^Bb #instead of Control-a, make command be control-b
+
+autodetach on #autodetach screen session on hangup instead of terminating screen
+
+startup_message off #turn off the splash screen
+
+defscrollback 32768
+
+# Amazon
+hardstatus alwayslastline "%{-b gk}%-w%{+b kg}%50>%n %t%{-b gk}%+w %=%C%<"
+
+vbell off
+
+termcapinfo xterm* ti@:te@
