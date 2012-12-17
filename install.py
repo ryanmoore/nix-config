@@ -5,27 +5,30 @@ import os
 import errno
 import shutil
 
-user_dir = os.path.expanduser('~/')
-
-files = {
-        'bashrc':      os.path.join(user_dir, '.bashrc'),
-        'vimrc':       os.path.join(user_dir, '.vimrc'),
-        'vim':         os.path.join(user_dir, '.vim'),
-        'screenrc':    os.path.join(user_dir, '.screenrc'),
-        'config':      os.path.join(user_dir, '.config'),
-        'Xdefaults':   os.path.join(user_dir, '.Xdefaults'),
-        'DIR_COLORS':  'etc/DIR_COLORS',
-        'bash.bashrc': 'etc/bash.bashrc',
-        }
-
 class UserObjectionException(Exception):
     pass
 
 def main():
+    if len(sys.argv) != 2:
+        print 'Usage: %s [user]'%sys.argv[0]
+        sys.exit(1)
+
     if os.getuid() != 0:
         print 'Installation to some directories requires sudo. Please rerun with elevated permissions.'
+        sys.exit(1)
 
-    for src,dest in files.iteritems():
+    files = (
+            ( 'bashrc',      '/home/{USER}/.bashrc'.format( USER=sys.argv[1] )),
+            ( 'vimrc',       '/home/{USER}/.vimrc'.format( USER=sys.argv[1] )),
+            ( 'vim',         '/home/{USER}/.vim'.format( USER=sys.argv[1] )),
+            ( 'screenrc',    '/home/{USER}/.screenrc'.format( USER=sys.argv[1] )),
+            ( 'config',      '/home/{USER}/.config'.format( USER=sys.argv[1] )),
+            ( 'Xdefaults',   '/home/{USER}/.Xdefaults'.format( USER=sys.argv[1] )),
+            ( 'DIR_COLORS',  '/etc/DIR_COLORS' ),
+            ( 'bash.bashrc', '/etc/bash.bashrc' ),
+            )
+
+    for src,dest in files:
         print 'Installing %s'%( dest )
 
         try:
