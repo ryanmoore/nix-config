@@ -111,6 +111,8 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
 fi
 
 #colored man pages!
+# source: http://nion.modprobe.de/blog/archives/572-less-colors-for-man-pages.html 
+
 man() {
     env \
         LESS_TERMCAP_mb=$(printf "\e[1;31m") \
