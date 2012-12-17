@@ -5,31 +5,27 @@ import os
 import errno
 import shutil
 
-sources = [
-        'bashrc',
-        'vimrc',
-        'vim',
-        'screenrc',
-        'config',
-        'Xdefaults',
-        ]
+user_dir = os.path.expanduser('~/')
+
+files = {
+        'bashrc':      os.path.join(user_dir, '.bashrc'),
+        'vimrc':       os.path.join(user_dir, '.vimrc'),
+        'vim':         os.path.join(user_dir, '.vim'),
+        'screenrc':    os.path.join(user_dir, '.screenrc'),
+        'config':      os.path.join(user_dir, '.config'),
+        'Xdefaults':   os.path.join(user_dir, '.Xdefaults'),
+        'DIR_COLORS':  'etc/DIR_COLORS',
+        'bash.bashrc': 'etc/bash.bashrc',
+        }
 
 class UserObjectionException(Exception):
     pass
 
 def main():
-    destdir = os.path.expanduser( '~/' )
+    if os.getuid() != 0:
+        print 'Installation to some directories requires sudo. Please rerun with elevated permissions.'
 
-    assert os.path.exists( destdir )
-
-    response = raw_input( 'Install to %s? (y/n) '%( destdir ) )
-
-    if response != 'y':
-        sys.exit( 1 )
-
-    for src in sources:
-        dest = os.path.join( destdir, '.'+src )
-
+    for src,dest in files.iteritems():
         print 'Installing %s'%( dest )
 
         try:
