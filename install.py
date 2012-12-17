@@ -11,6 +11,7 @@ sources = [
         'vim',
         'screenrc',
         'config',
+        'Xdefaults',
         ]
 
 class UserObjectionException(Exception):
