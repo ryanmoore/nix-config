@@ -18,16 +18,17 @@ def main():
         sys.exit(1)
 
     username=sys.argv[1]
+    src_folder = 'src'
 
     files = (
-            ( 'bashrc',      '/home/{USER}/.bashrc'.format( USER=username )),
-            ( 'vimrc',       '/home/{USER}/.vimrc'.format( USER=username )),
-            ( 'vim',         '/home/{USER}/.vim'.format( USER=username )),
-            ( 'screenrc',    '/home/{USER}/.screenrc'.format( USER=username )),
-            ( 'config',      '/home/{USER}/.config'.format( USER=username )),
-            ( 'Xdefaults',   '/home/{USER}/.Xdefaults'.format( USER=username )),
-            ( 'DIR_COLORS',  '/etc/DIR_COLORS' ),
-            ( 'bash.bashrc', '/etc/bash.bashrc' ),
+            ( os.path.join( src_folder, 'bashrc' ),      '/home/{USER}/.bashrc'.format( USER=username )),
+            ( os.path.join( src_folder, 'vimrc' ),       '/home/{USER}/.vimrc'.format( USER=username )),
+            ( os.path.join( src_folder, 'vim' ),         '/home/{USER}/.vim'.format( USER=username )),
+            ( os.path.join( src_folder, 'screenrc' ),    '/home/{USER}/.screenrc'.format( USER=username )),
+            ( os.path.join( src_folder, 'config' ),      '/home/{USER}/.config'.format( USER=username )),
+            ( os.path.join( src_folder, 'Xdefaults' ),   '/home/{USER}/.Xdefaults'.format( USER=username )),
+            ( os.path.join( src_folder, 'DIR_COLORS' ),  '/etc/DIR_COLORS' ),
+            ( os.path.join( src_folder, 'bash.bashrc' ), '/etc/bash.bashrc' ),
             )
 
     for src,dest in files:
