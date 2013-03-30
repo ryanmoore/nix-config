@@ -1,70 +1,53 @@
-# General
-#urxvt*termName:  rxvt-256color
- urxvt*loginShell:         true
- urxvt*scrollBar:         false
- urxvt*secondaryScroll:    true
- urxvt*saveLines:         65535
- urxvt*cursorBlink:       false
- urxvt*urgentOnBell:       true
-#urxvt*override-redirect:false
-#urxvt*borderLess:       false
-#urxvt*internalBorder:       0
-#urxvt*externalBorder:       0
- 
-# Extensions
- urxvt*perl-lib:        /usr/lib/urxvt/perl/
- urxvt*perl-ext-common: default,matcher,searchable-scrollback
- urxvt*urlLauncher:     /usr/bin/chromium
- urxvt*matcher.button:  1
-#  - catch ugly URLs
- urxvt.cutchars:        `()'*<>[]{|}"
- 
-# Appearance
-#  - use a bitmap font
- urxvt*font:        xft:Inconsolata:pixelsize=14:antialias=true:hinting=true
- urxvt*boldFont:    xft:Inconsolata:pixelsize=14:antialias=true:hinting=true
-#urxvt*font:        -xos4-terminus-medium-*-*-*-12-*-*-*-*-*-*-*
-#urxvt*boldFont:    -xos4-terminus-bold-*-*-*-12-*-*-*-*-*-*-*
-#  - use xft for drawing fonts
-#urxvt*font:       xft:Terminus:8
-#  - cursor
- urxvt*cursorColor: #DCDCCC
-#  - pseudo transparency
-urxvt*shading:    20
-urxvt*tintcolor:    Black
-urxvt*transparent:  true
-#
-#  - color scheme
- urxvt.background:  #000000
- urxvt.foreground:  #EBEBFF
-# black + red
-#urxvt*color0:     #3f3f3f
- urxvt*color0:      #000000
- urxvt*color1:      #e01010
-# green + yellow
- urxvt*color2:      #00AA00
- urxvt*color3:      #FFFF00
-# blue + purple
- urxvt*color4:      #112037
- urxvt*color5:      #A020F0
-# cyan + white
- urxvt*color6:      #5B5BC7
- urxvt*color7:      #fefefe
-# bright-black + bright-red
- urxvt*color8:      #6a6a6a
- urxvt*color9:      #FF5555
-# bright-green + bright-yellow
- urxvt*color10:     #90EE90
- urxvt*color11:     #ffff2f
-# bright-blue + bright-purple
- urxvt*color12:     #5B5BC7
- urxvt*color13:     #e628ba
-# bright-cyan + bright-white
- urxvt*color14:     #7D7DFB
- urxvt*color15:     #ffffff
+#urxvt*font:             xft:montecarlo:size=8
 
-# jump a word at a time with control+arrow
- urxvt.keysym.Control-Up:    \033[1;5A
- urxvt.keysym.Control-Down:  \033[1;5B
- urxvt.keysym.Control-Left:  \033[1;5D
- urxvt.keysym.Control-Right: \033[1;5C
+#urxvt*font:        xft:Inconsolata:pixelsize=14:antialias=true:hinting=true
+#urxvt*boldFont:    xft:Inconsolata:pixelsize=14:antialias=true:hinting=true
+
+urxvt*font:             xft:Inconsolata:size=11
+urxvt*boldFont:         xft:Inconsolata:size=11
+
+urxvt*termName:         rxvt
+urxvt*background:       #0c0d0e
+urxvt*foreground:       #7f8f9f
+urxvt*scrollBar:        false
+urxvt*matcher.button:   1
+urxvt.transparent:      false
+urxvt*allow_bold:       true
+
+Xft*dpi:                96
+Xft*antialias:          true
+Xft*hinting:            full
+
+URxvt*geometry:         85x16
+URxvt*fading:           0
+URxvt*tintColor:        #ffffff
+URxvt*shading:          0
+URxvt*inheritPixmap:    False
+
+! black + red
+#urxvt*color0:     #3f3f3f
+urxvt*color0:      #101010
+urxvt*color1:      #705050
+! green + yellow
+urxvt*color2:      #60b48a
+urxvt*color3:      #f0dfaf
+! blue + purple
+urxvt*color4:      #506070
+urxvt*color5:      #dc8cc3
+! cyan + white
+urxvt*color6:      #8cd0d3
+urxvt*color7:      #dcdccc
+! bright-black + bright-red
+urxvt*color8:      #000000
+urxvt*color9:      #dca3a3
+! bright-green + bright-yellow
+urxvt*color10:     #c3bf9f
+urxvt*color11:     #f0dfaf
+! bright-blue + bright-purple
+urxvt*color12:     #94bff3
+urxvt*color13:     #ec93d3
+! bright-cyan + bright-white
+urxvt*color14:     #93e0e3
+urxvt*color15:     #ffffff
+!}}}
+
