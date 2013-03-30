@@ -80,10 +80,11 @@ set tm=500
 
 syntax enable "enable syntax hl
 
-set gfn=Monospace\ 10
+set guifont=Monospace\ 10
 set shell=/bin/bash
 
-colorscheme ron
+colorscheme wombat256mod
+"colorscheme zenburn
 set background=dark
 
 set encoding=utf8

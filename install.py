@@ -17,13 +17,15 @@ def main():
         print 'Installation to some directories requires sudo. Please rerun with elevated permissions.'
         sys.exit(1)
 
+    username=sys.argv[1]
+
     files = (
-            ( 'bashrc',      '/home/{USER}/.bashrc'.format( USER=sys.argv[1] )),
-            ( 'vimrc',       '/home/{USER}/.vimrc'.format( USER=sys.argv[1] )),
-            ( 'vim',         '/home/{USER}/.vim'.format( USER=sys.argv[1] )),
-            ( 'screenrc',    '/home/{USER}/.screenrc'.format( USER=sys.argv[1] )),
-            ( 'config',      '/home/{USER}/.config'.format( USER=sys.argv[1] )),
-            ( 'Xdefaults',   '/home/{USER}/.Xdefaults'.format( USER=sys.argv[1] )),
+            ( 'bashrc',      '/home/{USER}/.bashrc'.format( USER=username )),
+            ( 'vimrc',       '/home/{USER}/.vimrc'.format( USER=username )),
+            ( 'vim',         '/home/{USER}/.vim'.format( USER=username )),
+            ( 'screenrc',    '/home/{USER}/.screenrc'.format( USER=username )),
+            ( 'config',      '/home/{USER}/.config'.format( USER=username )),
+            ( 'Xdefaults',   '/home/{USER}/.Xdefaults'.format( USER=username )),
             ( 'DIR_COLORS',  '/etc/DIR_COLORS' ),
             ( 'bash.bashrc', '/etc/bash.bashrc' ),
             )
