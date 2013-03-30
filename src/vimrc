@@ -83,11 +83,11 @@ syntax enable "enable syntax hl
 set guifont=Monospace\ 10
 set shell=/bin/bash
 
+set t_Co=256
 colorscheme wombat256mod
-"colorscheme zenburn
 set background=dark
-
 set encoding=utf8
+"colorscheme zenburn
 
 try
 	lang en_US
@@ -99,7 +99,6 @@ endtry
 "if &bg == "dark"
 "	highlight MatchParen ctermbg=darkblue guibg=blue
 "endif
-
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Files, backups, and undo
