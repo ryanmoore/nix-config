@@ -76,8 +76,9 @@ tags = {
     layout = { layouts[1], layouts[2], layouts[10], layouts[10], layouts[5],
            layouts[6], layouts[9], layouts[3], layouts[7] }
 }
+
 for s = 1, screen.count() do
-    tags[s] = { awful.tag(tags.names, s, tags.layout) }
+    tags[s] = awful.tag(tags.names, s, tags.layout)
 end
 -- }}}
 

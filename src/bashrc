@@ -58,20 +58,20 @@ unset color_prompt force_color_prompt
 
 # If this is an xterm set the title to user@host:dir
 # SCREEN TITLE STUFF CHANGE THE HOSTNAME
-case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-screen*)
-    if [ $SSH_CONNECTION ] ; then
-        PROMPT_COMMAND='echo -ne "\033k\033\033$HOSTNAME[`basename ${PWD}`]\033\\"'
-    else
-        PROMPT_COMMAND='echo -ne "\033k\033\033[`basename ${PWD}`]\033\\"'
-    fi
-    ;;
-*)
-    ;;
-esac
+#case "$TERM" in
+#xterm*|rxvt*)
+#    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+#    ;;
+#screen*)
+#    if [ $SSH_CONNECTION ] ; then
+#        PROMPT_COMMAND='echo -ne "\033k\033\033$HOSTNAME[`basename ${PWD}`]\033\\"'
+#    else
+#        PROMPT_COMMAND='echo -ne "\033k\033\033[`basename ${PWD}`]\033\\"'
+#    fi
+#    ;;
+#*)
+#    ;;
+#esac
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -124,3 +124,23 @@ man() {
         LESS_TERMCAP_us=$(printf "\e[1;32m") \
             man "$@"
 }
+
+RED="\[\033[0;31m\]"
+YELLOW="\[\033[0;33m\]"
+GREEN="\[\033[0;32m\]"
+ENDCOLOR="\e[0m"
+
+function parse_git_dirty {
+  [[ $(git status 2> /dev/null | tail -n1) != "nothing to commit (working directory clean)" ]] && echo "*"
+  }
+  function parse_git_branch {
+    git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/[\1$(parse_git_dirty)] /"
+}
+
+PS1="\$(date +%H:%M) ${YELLOW}\w${RED} \$(parse_git_branch)${GREEN}\$${ENDCOLOR} "
+if [ ${SSH_CONNECTION} ]
+then 
+    PS1="\u@\h ${PS1}"
+else
+    PS1="\u ${PS1}"
+fi
