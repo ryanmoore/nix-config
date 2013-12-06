@@ -1,7 +1,11 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " => My Commands 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-
+set nocompatible
+set t_Co=16
+execute pathogen#infect()
+set cursorline
+set colorcolumn=80
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General
@@ -84,8 +88,9 @@ set guifont=Monospace\ 10
 set shell=/bin/bash
 
 set t_Co=256
-colorscheme wombat256mod
+"colorscheme wombat256mod
 set background=dark
+colorscheme solarized
 set encoding=utf8
 "colorscheme zenburn
 

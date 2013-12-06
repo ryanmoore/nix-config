@@ -13,12 +13,12 @@ def main():
         print 'Usage: %s [user]'%sys.argv[0]
         sys.exit(1)
 
-    if os.getuid() != 0:
-        print 'Installation to some directories requires sudo. Please rerun with elevated permissions.'
-        sys.exit(1)
+    #if os.getuid() != 0:
+    #    print 'Installation to some directories requires sudo. Please rerun with elevated permissions.'
+    #    sys.exit(1)
 
     username=sys.argv[1]
-    src_folder = 'src'
+    src_folder = os.path.abspath('./src')
 
     files = (
             ( os.path.join( src_folder, 'bashrc' ),      '/home/{USER}/.bashrc'.format( USER=username )),
@@ -63,15 +63,8 @@ def DeleteExisting( target ):
         print '\trm -rf %s'%( target )
 
 def Install( src, dest ):
-    try:
-        shutil.copytree( src, dest )
-    except OSError as e:
-        if e.errno == errno.ENOTDIR:
-            shutil.copy( src, dest )
-        else:
-            raise
-
-    print '\tcp %s %s'%( src, dest )
+    os.symlink( src, dest )
+    print '\tln -s %s %s'%( src, dest )
 
 if __name__ == '__main__':
     main()
