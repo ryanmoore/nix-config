@@ -1,70 +1,91 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 import sys
 import os
 import errno
 import shutil
+import subprocess
+import logging
 
-class UserObjectionException(Exception):
-    pass
+BASE_DIR = os.path.dirname(os.path.realpath(__file__))
+EXTERNAL = os.path.join(BASE_DIR, 'external')
+VIM_DIR  = os.path.join(BASE_DIR, 'src', 'vim')
+
+solarized_repo = r'git://github.com/altercation/solarized.git'
+solarized_root = os.path.join(EXTERNAL, 'solarized')
+
+pathogen_repo = r'git://github.com/tpope/vim-pathogen'
+pathogen_root = os.path.join(EXTERNAL, 'pathogen')
+
+def git_clone(repo, root):
+    git = '/usr/bin/git'
+    if not os.path.exists(root):
+        cmd = [ git, 'clone', repo, root ]
+        logging.info( ' '.join(cmd) )
+        cwd = './'
+    else:
+        cmd = [ git, 'pull' ]
+        cwd = root
+        logging.info( 'from {}: {}'.format(cwd, ' '.join(cmd)) )
+    subprocess.check_call(cmd, cwd=cwd)
+
+def setup_pathogen():
+    git_clone(pathogen_repo, pathogen_root)
+    src = os.path.join(pathogen_root, 'autoload', 'pathogen.vim')
+    dest = os.path.join(VIM_DIR, 'autoload', 'pathogen.vim')
+    install(src, dest)
+
+def setup_solarized():
+    git_clone(solarized_repo, solarized_root)
+    solarized_colors_dir = 'vim-colors-solarized'
+    src = os.path.join(solarized_root, solarized_colors_dir)
+    dest = os.path.join(VIM_DIR, 'bundle', solarized_colors_dir)
+    install(src, dest)
 
 def main():
-    if len(sys.argv) != 2:
-        print 'Usage: %s [user]'%sys.argv[0]
-        sys.exit(1)
+    logging.basicConfig(level=logging.INFO)
 
-    #if os.getuid() != 0:
-    #    print 'Installation to some directories requires sudo. Please rerun with elevated permissions.'
-    #    sys.exit(1)
+    setup_pathogen()
+    setup_solarized()
 
-    username=sys.argv[1]
-    src_folder = os.path.abspath('./src')
+    tolink = [
+             ('bashrc',    '~/.bashrc'),
+             ('vimrc',     '~/.vimrc'),
+             ('vim',       '~/.vim'),
+             ('screenrc',  '~/.screenrc'),
+             ('config',    '~/.config'),
+             ('tmux.conf', '~/.tmux.conf'),
+            ]
 
-    files = (
-            ( os.path.join( src_folder, 'bashrc' ),      '/home/{USER}/.bashrc'.format( USER=username )),
-            ( os.path.join( src_folder, 'vimrc' ),       '/home/{USER}/.vimrc'.format( USER=username )),
-            ( os.path.join( src_folder, 'vim' ),         '/home/{USER}/.vim'.format( USER=username )),
-            ( os.path.join( src_folder, 'screenrc' ),    '/home/{USER}/.screenrc'.format( USER=username )),
-            ( os.path.join( src_folder, 'config' ),      '/home/{USER}/.config'.format( USER=username )),
-            ( os.path.join( src_folder, 'Xdefaults' ),   '/home/{USER}/.Xdefaults'.format( USER=username )),
-            ( os.path.join( src_folder, 'DIR_COLORS' ),  '/etc/DIR_COLORS' ),
-            ( os.path.join( src_folder, 'bash.bashrc' ), '/etc/bash.bashrc' ),
-            )
+    src_folder = os.path.abspath(os.path.join(BASE_DIR, 'src'))
+    tolink = [ (os.path.join(src_folder, first), os.path.expanduser(second)) for first,second in tolink ]
+    tolink.append( ( os.path.join(solarized_root, 'xresources', 'solarized'),
+        os.path.expanduser('~/.Xresources') ) )
 
-    for src,dest in files:
-        print 'Installing %s'%( dest )
+    for src,dest in tolink:
+        install( src, dest )
 
+def user_says_yes(query):
+    answer = input(query)
+    return answer.lower() == 'y'
+
+def install( src, dest ):
+    src = os.path.abspath(src)
+    dest = os.path.abspath(dest)
+    if os.path.exists(dest) and user_says_yes('Overwrite {} (Y/n)? '.format(dest) ):
+        logging.info('rm {}'.format(dest))
         try:
-            DeleteExisting( dest )
-        except UserObjectionException:
-            continue
+            os.remove(dest)
         except OSError as e:
-            print 'Error: Failed to remove %s. Skipping.'%( dest )
-            continue
-
-        try:
-            Install( src, dest )
-        except OSError as e:
-            print 'Error: Failed to install %s to %s. Skipping.'%( src, dest )
-            continue
-
-def DeleteExisting( target ):
-    if os.path.exists( target ):
-        response = raw_input( 'Overwrite %s? (y/n) '%( target ) )
-        if response != 'y':
-            raise UserObjectionException()
-
-        try:
-            shutil.rmtree( target )
-        except OSError as e:
-            if e.errno == errno.ENOTDIR:
-                os.remove( target )
-
-        print '\trm -rf %s'%( target )
-
-def Install( src, dest ):
+            if e.errno == os.errno.EISDIR:
+                shutil.rmtree(dest)
+            else:
+                raise
+    else:
+        logging.info('skipping {}'.format(dest))
+        return
+    logging.info('ln -s {} {}'.format(src, dest))
     os.symlink( src, dest )
-    print '\tln -s %s %s'%( src, dest )
 
 if __name__ == '__main__':
     main()
