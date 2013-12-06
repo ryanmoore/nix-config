@@ -18,6 +18,8 @@ solarized_root = os.path.join(EXTERNAL, 'solarized')
 pathogen_repo = r'git://github.com/tpope/vim-pathogen'
 pathogen_root = os.path.join(EXTERNAL, 'pathogen')
 
+vim_plugins = [ r'https://github.com/scrooloose/nerdtree.git' ]
+
 def git_clone(repo, root):
     git = '/usr/bin/git'
     if not os.path.exists(root):
@@ -43,6 +45,18 @@ def setup_solarized(args):
     dest = os.path.join(VIM_DIR, 'bundle', solarized_colors_dir)
     install(src, dest, args)
 
+def plugin_name(path):
+    base = os.path.basename(path)
+    assert base.endswith('.git')
+    return base[:-len('.git')]
+
+def install_vim_plugins(args):
+    for plugin in vim_plugins:
+        root = os.path.join(EXTERNAL, plugin_name(plugin))
+        git_clone(plugin, root)
+        dest = os.path.join(VIM_DIR, 'bundle', plugin_name(plugin))
+        install(root, dest, args)
+
 def main():
     logging.basicConfig(level=logging.INFO)
     parser = argparse.ArgumentParser(description='Install config files to home directory (with soft links)')
@@ -52,6 +66,7 @@ def main():
     args = parser.parse_args()
     setup_pathogen(args)
     setup_solarized(args)
+    install_vim_plugins(args)
 
     tolink = [
              ('bashrc',    '~/.bashrc'),
