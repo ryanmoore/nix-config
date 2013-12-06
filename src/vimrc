@@ -338,9 +338,12 @@ noremap <silent> ,u :<C-B>sil <C-E>s/^\(\s*\)\V<C-R>=escape(b:comment_leader,'\/
 
 
 "screen
-set titlestring=%t%(\ %M%)%(\ (%{expand(\"%:p:h\")})%)%(\ %a%)\ -\ %{v:servername}
-set title
+"set titlestring=%t%(\ %M%)%(\ (%{expand(\"%:p:h\")})%)%(\ %a%)\ -\ %{v:servername}
+"set title
 if $TERM=='screen'
     exe "set title titlestring=vim:%f"
     exe "set title t_ts=\<ESC>k t_fs=\<ESC>\\"
 endif
+""stop the "Thanks for flying Vim" message on exit
+let &titleold=getcwd()
+
