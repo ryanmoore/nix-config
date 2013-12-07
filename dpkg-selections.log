@@ -1,4 +1,5 @@
 awesome						install
+exuberant-ctags             install
 git						    install
 rxvt-unicode-256color		install
 ttf-inconsolata             install
