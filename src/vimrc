@@ -1,5 +1,5 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-" => My Commands 
+" => My Commands (more at end too. Need pathogen early I think.
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 set nocompatible
 set t_Co=16
@@ -347,3 +347,4 @@ endif
 ""stop the "Thanks for flying Vim" message on exit
 let &titleold=getcwd()
 
+map <C-n> :NERDTreeToggle<CR>
