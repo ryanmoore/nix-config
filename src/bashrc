@@ -124,5 +124,10 @@ else
     PS1="\u ${PS1}"
 fi
 
+# keep virtual-env across windows in tmux
+if [ -n "$VIRTUAL_ENV" ]; then
+    source "${VIRTUAL_ENV}/bin/activate"
+fi
+
 # get rid of an annoying gnome-keyring error in awesome
 unset GNOME_KEYRING_CONTROL
