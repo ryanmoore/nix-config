@@ -117,7 +117,7 @@ function parse_git_dirty {
 }
 
 PS1="\$(date +%H:%M) ${YELLOW}\w${RED} \$(parse_git_branch)${GREEN}\$${ENDCOLOR} "
-if [ ${SSH_CONNECTION} ]
+if [ -n "${SSH_CONNECTION}" ]
 then 
     PS1="\u@\h ${PS1}"
 else
