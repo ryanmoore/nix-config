@@ -20,6 +20,8 @@ nnoremap ` '
 set history=700
 "change terminal title(hopefully)
 
+set noautoindent
+set nosmartindent
 filetype plugin on
 filetype indent on
 
@@ -213,7 +215,7 @@ set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{CurDir()}%h\ \ \ Line:\ 
 
 
 function! CurDir()
-	let curdir = substitute(getcwd(), '/Users/ryancm/', "~/", "g")
+	let curdir = substitute(getcwd(), '/home/ryan/', "~/", "g")
 	return curdir
 endfunction
 
@@ -345,6 +347,6 @@ if $TERM=='screen'
     exe "set title t_ts=\<ESC>k t_fs=\<ESC>\\"
 endif
 ""stop the "Thanks for flying Vim" message on exit
-let &titleold=getcwd()
+let &titleold=CurDir()
 
 map <C-n> :NERDTreeToggle<CR>
