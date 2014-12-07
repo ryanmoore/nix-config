@@ -1,11 +1,24 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-" => My Commands (more at end too. Need pathogen early I think.
+" => My Commands (more at end too)
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 set nocompatible
 set t_Co=16
-execute pathogen#infect()
 set cursorline
 set colorcolumn=80
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+"Vundle
+"""""""
+Plugin 'gmarik/Vundle.vim'
+Plugin 'scrooloose/syntastic'
+Plugin 'bling/vim-airline'
+Plugin 'altercation/vim-colors-solarized'
+
+call vundle#end()
+filetype plugin indent on
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General
@@ -301,8 +314,6 @@ map <leader>pp :setlocal paste!<cr>
 
 map <leader>bb :cd ..<cr>
 
-
-
 """"""""""""MY STUFF
 "make tags search up
 set tags=tags;/
@@ -350,3 +361,4 @@ endif
 let &titleold=CurDir()
 
 map <C-n> :NERDTreeToggle<CR>
+
