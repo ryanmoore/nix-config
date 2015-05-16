@@ -3,9 +3,11 @@ nix-config
 
 Config files for nix.
 
-packages:
-    ttf-inconsolatas
-    urxvt
+required packages:
+    fonts-inconsolata
+    rxvt-unicode
+    cmake
+    build-essential
 
 Don't have this automatically install every time, but worth noting where it goes:
 

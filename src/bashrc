@@ -135,3 +135,4 @@ unset GNOME_KEYRING_CONTROL
 export EDITOR=vim
 export GIT_EDITOR=vim
 export VISUAL=vim
+alias tmux="TERM=screen-256color-bce tmux"

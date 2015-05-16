@@ -99,17 +99,16 @@ set tm=500
 " => Colors and Fonts
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 
-syntax enable "enable syntax hl
-
 set guifont=Monospace\ 10
 set shell=/bin/bash
 
-set t_Co=256
-"colorscheme wombat256mod
+syntax on
+"let g:solarized_termcolors=256
+set t_Co=256 
 set background=dark
 colorscheme solarized
+
 set encoding=utf8
-"colorscheme zenburn
 
 try
 	lang en_US

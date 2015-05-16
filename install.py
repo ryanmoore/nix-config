@@ -12,11 +12,46 @@ BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 EXTERNAL = os.path.join(BASE_DIR, 'external')
 VIM_DIR  = os.path.join(BASE_DIR, 'src', 'vim')
 
+class GitPackage:
+    def __init__(self, src, name):
+        self.src = src
+        self.name = name
+
+    def install_or_update(self, dst):
+        dst = os.path.expanduser(dst)
+        logging.info('Installing {} to {}...'.format(self.name, dst))
+        if os.path.exists(dst):
+            logging.info('{} already installed.'.format(self.name))
+            logging.info('Updating {}...'.format(self.name))
+            with ChdirContextManager(dst):
+                subprocess.call(['git', 'pull'])
+            logging.info('Update complete: {}'.format(self.name))
+        else:
+            logging.info('Cloning {}...'.format(self.name))
+            subprocess.check_call(['git', 'clone',
+                self.src, dst])
+            logging.info('Cloning complete: {}'.format(self.name))
+        logging.info('{} pull complete.'.format(self.name))
+
+VundleGithub = GitPackage(
+    'https://github.com/Anthony25/gnome-terminal-colors-solarized',
+    'Vundle')
+
+SolarizedGithub = GitPackage(
+    'https://github.com/altercation/solarized.git',
+    'Solarized')
+
+GnomeTerminalSolarized = GitPackage(
+    'https://github.com/Anthony25/gnome-terminal-colors-solarized.git',
+    'GnomeTerminalSolarized')
+
 def main():
     logging.basicConfig(level=logging.INFO)
     parser = argparse.ArgumentParser(description='Install config files to home directory (with soft links)')
     parser.add_argument('--force', '-f', action='store_true', default=False,
             help='Don\'t ask about overwriting files, just do.')
+    parser.add_argument('--skip_ycm', action='store_true', default=False,
+            help='Skip building YouCompleteMe')
 
     args = parser.parse_args()
     tolink = [
@@ -31,11 +66,28 @@ def main():
 
     src_folder = os.path.abspath(os.path.join(BASE_DIR, 'src'))
     tolink = [ (os.path.join(src_folder, first), os.path.expanduser(second)) for first,second in tolink ]
-    tolink.append( ( os.path.join(solarized_root, 'xresources', 'solarized'),
-        os.path.expanduser('~/.Xresources') ) )
-
+    extralinks = [(os.path.expanduser('~/.bashrc'), os.path.expanduser('~/.bash_profile'))]
+    tolink = tolink + extralinks
     for src,dest in tolink:
         install( src, dest, args )
+    VundleGithub.install_or_update('~/.vim/bundle/Vundle.vim')
+    solarized = os.path.join(BASE_DIR, 'solarized')
+    SolarizedGithub.install_or_update(solarized)
+    gnomesolarized = os.path.join(BASE_DIR, 'GnomeTerminalSolarized')
+    GnomeTerminalSolarized.install_or_update(gnomesolarized)
+    with ChdirContextManager(gnomesolarized):
+        subprocess.check_call('./set_dark.sh')
+    #tolink.append( ( os.path.join(solarized_root, 'xresources', 'solarized'),
+    #    os.path.expanduser('~/.Xresources') ) )
+
+
+    logging.info('File installation complete')
+    logging.info('Updating vim plugins')
+    logging.info('Calling: vim +PluginInstall +qall')
+    subprocess.check_call('vim +PluginInstall +qall'.split())
+    if not args.skip_ycm:
+        with ChdirContextManager(os.path.expanduser('~/.vim/bundle/YouCompleteMe')):
+            subprocess.check_call('./install.sh')
 
 def user_says_yes(query):
     answer = input(query)
@@ -59,6 +111,17 @@ def install( src, dest, args ):
             return
     logging.info('ln -s {} {}'.format(src, dest))
     os.symlink( src, dest )
+
+class ChdirContextManager:
+    def __init__(self, dst):
+        self.original = os.getcwd()
+        self.dst = dst
+
+    def __enter__(self):
+        os.chdir(self.dst)
+
+    def __exit__(self, *args):
+        os.chdir(self.original)
 
 if __name__ == '__main__':
     main()
