@@ -34,7 +34,7 @@ class GitPackage:
         logging.info('{} pull complete.'.format(self.name))
 
 VundleGithub = GitPackage(
-    'https://github.com/Anthony25/gnome-terminal-colors-solarized',
+    'https://github.com/gmarik/Vundle.vim.git',
     'Vundle')
 
 SolarizedGithub = GitPackage(
