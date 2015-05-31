@@ -137,4 +137,4 @@ export GIT_EDITOR=vim
 export VISUAL=vim
 alias tmux="TERM=screen-256color-bce tmux"
 
-source .pathsetup
+source $HOME/.pathsetup

@@ -132,12 +132,18 @@ set nobackup
 set nowb
 set noswapfile
 
-"Persistent undo
-try
-	set undodir=~/.vim/undodir
-	set undofile
-catch
-endtry
+let vimDir = '$HOME/.vim'
+let &runtimepath.=','.vimDir
+
+" Keep undo history across sessions by storing it in a file
+if has('persistent_undo')
+    let myUndoDir = expand(vimDir . '/undodir')
+    " Create dirs
+    silent call system('mkdir ' . vimDir)
+    silent call system('mkdir ' . myUndoDir)
+    let &undodir = myUndoDir
+    set undofile
+endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Text, tab and indent related
@@ -365,3 +371,5 @@ let &titleold=CurDir()
 
 map <C-n> :NERDTreeToggle<CR>
 
+map <leader>n :bn<cr>
+map <leader>p :bp<cr>
