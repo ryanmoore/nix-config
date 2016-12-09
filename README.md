@@ -3,12 +3,19 @@ nix-config
 
 Config files for nix.
 
-required packages:
-    fonts-inconsolata
-    rxvt-unicode
-    cmake
-    build-essential
+Installation
+------------
 
-Don't have this automatically install every time, but worth noting where it goes:
+Use the makefile which will install a few apps and then run Ansible to install.
 
-/etc/X11/xorg.conf.d/10-monitor.conf
+Something like:
+
+```sh
+    sudo make ubuntu
+    # ...
+    # follow makefiles setup instructions
+    # ...
+    make ansible
+```
+
+Makefile helps guide the first few steps.
