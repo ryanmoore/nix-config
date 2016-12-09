@@ -1,0 +1,10 @@
+---
+
+- name: Download gnome-terminal-solarized
+  git: 
+      repo: git://github.com/Anthony25/gnome-terminal-colors-solarized.git
+      dest: /tmp/GnomeTerminalSolarized
+
+
+- name: Install GnomeTerminalSolarized dark theme to Solarized profile
+  command: /tmp/GnomeTerminalSolarized/install.sh --scheme dark --install-dircolors --profile Solarized

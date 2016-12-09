@@ -1,0 +1,5 @@
+- hosts: local
+  become: yes
+  become_user: ryan
+  roles:
+      - common

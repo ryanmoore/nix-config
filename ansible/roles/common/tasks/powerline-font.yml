@@ -1,0 +1,28 @@
+---
+
+- name: Font directory facts
+  set_fact:
+      fontsdir: '~/.fonts'
+      fontconfig: '~/.config/fontconfig/conf.d'
+
+- name: Make sure font directories exist
+  file:
+      path: "{{ item  }}"
+      state: directory
+  with_items:
+      - "{{ fontsdir }}"
+      - "{{ fontconfig }}"
+
+- name: Download powerline otf
+  get_url:
+      url: https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
+      dest: ~/.fonts
+
+- name: clear fonts cache
+  command: fc-cache -vf ~/.fonts/
+
+- name: Download font powerline conf
+  get_url:
+      url: https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf
+      dest: ~/.config/fontconfig/conf.d/
+

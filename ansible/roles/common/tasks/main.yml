@@ -1,0 +1,6 @@
+---
+    - include: vim.yml
+    - include: bash.yml
+    - include: tmux.yml
+    - include: zsh.yml
+    - include: gnome-terminal-solarized.yml

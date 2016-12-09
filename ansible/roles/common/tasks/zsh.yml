@@ -1,0 +1,28 @@
+---
+
+- name: install required packages
+  package:
+      name: "{{ item }}"
+      state: present
+  become: true
+  become_user: root
+  with_items:
+      - zsh 
+
+- name: install oh-my-zsh
+  git: 
+      repo: git://github.com/robbyrussell/oh-my-zsh.git
+      dest: ~/.oh-my-zsh
+
+- name: Link zshrc
+  file:
+      src: "{{ role_path }}/files/zshrc"
+      dest: "~/.zshrc"
+      state: link
+
+- name: Change default shell
+  become: true
+  become_user: root
+  command: "chsh -s /bin/zsh {{ ansible_user_id }}"
+
+- include: powerline-font.yml

@@ -1,0 +1,60 @@
+---
+
+- name: install required packages
+  package:
+      name: "{{ item }}"
+      state: present
+  become: true
+  with_items:
+      - vim
+      - build-essential
+      - cmake
+      - python-dev
+      - python3-dev
+      - git-core
+
+- name: Specify vim autoload directory
+  set_fact:
+      vim_autoload_dir: '~/.vim/autoload'
+
+- name: Make sure {{ vim_autoload_dir }} exists
+  file:
+      path: "{{ vim_autoload_dir }}"
+      state: directory
+  
+- name: link vimrc
+  file:
+      src: "{{ role_path }}/files/vimrc"
+      dest: "~/.vimrc"
+      state: link
+
+- name: install vim-plug
+  get_url: 
+      url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+      dest: "{{ vim_autoload_dir }}/plug.vim"
+
+# Getting vim to behave correctly when called from a subshell requires the
+# below (as far as I could get to work). Without the -E/-u/-S options, it was
+# hanging
+- name: install vim plugins
+  shell: vim -E -u NONE -S ~/.vimrc +PlugInstall +qall > /tmp/debug.log || true
+
+# The ||true above masks any errors (vim returns 1 in the above case even on 
+# apparent success). So look up a directory and fail if it does not exist.
+# Choice of syntastic is arbitrary as opposed to checking all plugins which
+# would then need to be kept in sync with vimrc
+- name: Look for vim plugin install evidence
+  stat:
+      path: /home/ryan/.vim/plugged/syntastic
+  register: synst
+
+- name: Check that a single vim plugin installed (syntastic)
+  fail:
+      msg: "Vim Plugins failed to install. Couldn't find ~/.vim/plugged/syntastic"
+  when: not synst.stat.exists
+
+- name: Link vim templates
+  file:
+      src: "{{ role_path }}/files/vim-templates"
+      dest: "~/.vim/templates"
+      state: link

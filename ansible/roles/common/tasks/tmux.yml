@@ -1,0 +1,16 @@
+
+---
+
+- name: install required packages
+  package:
+      name: "{{ item }}"
+      state: present
+  become: true
+  with_items:
+      - tmux
+
+- name: link tmuxconf
+  file:
+      src: "{{ role_path }}/files/tmux.conf"
+      dest: "~/.tmux.conf"
+      state: link

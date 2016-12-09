@@ -1,0 +1,317 @@
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => My Commands (more at end too)
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set nocompatible
+set t_Co=16
+set cursorline
+set colorcolumn=80
+
+function! InstallYouCompleteMe(info)
+    if a:info.status == 'installed' || a:info.force
+        !./install.py --clang-completer --racer-completer
+    endif
+endfunction
+
+""""""""""
+"vim-plug
+""""""""""
+call plug#begin('~/.vim/plugged')
+
+Plug 'scrooloose/syntastic'
+Plug 'bling/vim-airline'
+Plug 'altercation/vim-colors-solarized'
+Plug 'Valloric/YouCompleteMe',  { 'do': function('InstallYouCompleteMe') }
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+" Python specific plugins
+Plug 'klen/python-mode'
+Plug 'tmhedberg/SimpylFold'
+
+" Rust specific plugins
+Plug 'rust-lang/rust.vim'
+
+
+call plug#end()
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => General
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+vmap  - :diffget<cr>
+
+"make it easier to jump to specific mark locations
+nnoremap ' `
+nnoremap ` '
+"keep longer history log
+set history=700
+
+set noautoindent
+set nosmartindent
+filetype plugin on
+filetype indent on
+
+"auto read when a file is changed from the outside
+set autoread
+
+let mapleader = ","
+let g:mapleader = ","
+
+"fast saving
+nmap <leader>w :w!<cr>
+
+"when vimrc is edited, reload it
+autocmd! bufwritepost vimrc source ~/.vimrc
+
+"Save and restore things like folds
+au BufWinLeave * silent! mkview
+au BufWinEnter * silent! loadview
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => VIM userinterface 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+"center page on cursor a bit better
+set scrolloff=7
+
+"show menu with possible tab completions
+set wildmenu
+
+"always show current position
+set ruler
+
+set cmdheight=1
+
+"Set backspace confi
+set backspace=eol,start,indent
+set whichwrap+=<,>
+
+"search casing
+set ignorecase
+set smartcase
+
+set hlsearch "Highlight search things
+
+"set incsearch "make search act like search in modern browser
+set nolazyredraw "don't redraw while executing macros
+
+set magic "Set magic on, for regex
+
+set showmatch "Show batching brackets when text indicator is over them
+set mat=2 "how many tenths of a second to blink
+
+"No sound on errors
+set noerrorbells
+set novisualbell
+set t_vb=
+set tm=500
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Colors and Fonts
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+set guifont=Monospace\ 10
+set shell=/bin/bash
+
+syntax on
+"let g:solarized_termcolors=256
+set t_Co=256 
+set background=dark
+colorscheme solarized
+
+set encoding=utf8
+
+try
+	lang en_US
+catch
+endtry
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Files, backups, and undo
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+"Turn backup off, since most stuff is rev control anyways
+set nobackup
+set nowb
+set noswapfile
+
+let vimDir = '$HOME/.vim'
+let &runtimepath.=','.vimDir
+
+" Keep undo history across sessions by storing it in a file
+if has('persistent_undo')
+    let myUndoDir = expand(vimDir . '/undodir')
+    " Create dirs
+    silent call system('mkdir ' . vimDir)
+    silent call system('mkdir ' . myUndoDir)
+    let &undodir = myUndoDir
+    set undofile
+endif
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Text, tab and indent related
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set expandtab
+set shiftwidth=4
+set tabstop=4
+set smarttab
+
+"turn off expandnig tabs for makefiles
+au FileType makefile set noexpandtab ts=8 sw=8
+
+set lbr
+set tw=500
+
+set ai "Auto indent
+set si "Smart indet
+"set wrap "Wrap lines
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Moving around
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+map <silent> <leader><cr> :noh<cr>
+
+" Close the current buffer
+map <leader>bd :Bclose<cr>
+
+" Close all the buffers
+map <leader>ba :1,300 bd!<cr>
+
+" Use the arrows to something usefull
+map <right> :tabn<cr>
+map <left> :tabp<cr>
+
+" When pressing <leader>cd switch to the directory of the open buffer
+map <leader>cd :cd %:p:h<cr>
+
+command! Bclose call <SID>BufcloseCloseIt()
+function! <SID>BufcloseCloseIt()
+	let l:currentBufNum = bufnr("%")
+	let l:alternateBufNum = bufnr("#")
+
+	if buflisted(l:alternateBufNum)
+		buffer #
+	else
+		bnext
+	endif
+
+	if bufnr("%") == l:currentBufNum
+		new
+	endif
+
+	if buflisted(l:currentBufNum)
+		execute("bdelete! ".l:currentBufNum)
+	endif
+endfunction
+
+" Specify the behavior when switching between buffers 
+try
+	set switchbuf=usetab
+	set stal=2
+catch
+endtry
+
+""""""""""""""""""""""""""""""
+" => Statusline
+""""""""""""""""""""""""""""""
+" Always hide the statusline
+set laststatus=2
+
+" Format the statusline
+set statusline=\ %F%m%r%h\ %w\ \ CWD:\ %r%{CurDir()}%h\ \ \ Line:\ %l/%L:%c
+
+
+function! CurDir()
+	let curdir = substitute(getcwd(), '/home/ryan/', "~/", "g")
+	return curdir
+endfunction
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Parenthesis/bracket expanding
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Map auto complete of (, ", ', [
+au FileType c,cpp inoremap $3 {}<esc>i
+au FileType c,cpp inoremap $4 {<esc>o}<esc>O
+au FileType c,cpp inoremap $5 {<esc>o};<esc>O
+
+" in verilog, replace {} with beginend
+au FileType verilog inoremap $4 <esc>^"py$obegin<esc>oend // <esc>"ppO
+
+set guitablabel=%t
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Cope
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+map <leader>cc :botright cope<cr>
+map <leader>n :cn<cr>
+map <leader>p :cp<cr>
+
+""""""""""""""""""""""""""""""
+" => Python section
+""""""""""""""""""""""""""""""
+"let python_highlight_all = 1
+"au FileType python syn keyword pythonDecorator True None False self
+
+au BufNewFile,BufRead *.jinja set syntax=htmljinja
+au BufNewFile,BufRead *.mako set ft=mako
+
+"""""""""""
+" Other
+""""""""""
+
+"make tags search up
+set tags=tags;/
+
+set nowrap
+"ignore case unless capitals are present
+"ignore these file endings when completing names
+set wildignore=.svn,CVS,.git,*.o,*.a,*.swp,*.obj,*.jpg,*.png,*.gif,*.bmp
+
+"display line numbers
+set number
+
+" Used to do this - may be handy to know something like this can be done
+"If a tmp1.* exists matching our extension pattern,
+"read the tmp1.% into our buffer and substitude a time string if we can
+"autocmd! BufNewFile * silent! 0r ~/.vim/templates/tmp1.%:e| silent! %s/VIM_TIME_REGEX/\=strftime("%c")/
+
+" (sometimes) intercept F1 from opening help (doesn't work on some systems)
+nmap <F1> :echo<CR>
+imap <F1> <C-o>:echo<CR>
+
+inoremap jk <ESC>l
+
+" Fast declaration of module ports
+au FileType verilog nnoremap <F9> :s/\(\s\+\)\(\w\+\),/\1.\2(\2),/
+
+set diffopt+=iwhite
+
+"Automatic comment/uncomment
+au FileType haskell,vhdl,ada let b:comment_leader = '--'
+au FileType vim let b:comment_leader = '"'
+au FileType c,cpp,java let b:comment_leader = '//'
+au FileType sh,make,python let b:comment_leader = '#'
+au FileType matlab,tex let b:comment_leader = '%'
+noremap <silent> ,c :<C-B>sil <C-E>s/^\(\s*\)/\1<C-R>=escape(b:comment_leader,'\/')<CR>/<CR>:noh<CR>
+noremap <silent> ,u :<C-B>sil <C-E>s/^\(\s*\)\V<C-R>=escape(b:comment_leader,'\/')<CR>/\1/e<CR>:noh<CR>
+
+"screen
+"set titlestring=%t%(\ %M%)%(\ (%{expand(\"%:p:h\")})%)%(\ %a%)\ -\ %{v:servername}
+"set title
+if $TERM=='screen'
+    exe "set title titlestring=vim:%f"
+    exe "set title t_ts=\<ESC>k t_fs=\<ESC>\\"
+endif
+""stop the "Thanks for flying Vim" message on exit
+let &titleold=CurDir()
+
+map <C-n> :NERDTreeToggle<CR>
+
+map <leader>n :bn<CR>
+map <leader>p :bp<CR>
+map <C-p> :FZF<CR>
+
+" Adjust default split direction to what feels more natural
+set splitbelow
+set splitright
+
+autocmd CompleteDone * pclose

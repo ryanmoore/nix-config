@@ -45,6 +45,13 @@ GnomeTerminalSolarized = GitPackage(
     'https://github.com/Anthony25/gnome-terminal-colors-solarized.git',
     'GnomeTerminalSolarized')
 
+def ask_about_initial_setup():
+    print('Setup:')
+    print('\tsudo apt install build-essential cmake python-dev python3-dev tmux')
+    print('\tCreate a new Gnome Terminal profile called \'Solarized\'')
+    if not user_says_y('Continue?'):
+        sys.exit(1)
+
 def main():
     logging.basicConfig(level=logging.INFO)
     parser = argparse.ArgumentParser(description='Install config files to home directory (with soft links)')
@@ -52,16 +59,25 @@ def main():
             help='Don\'t ask about overwriting files, just do.')
     parser.add_argument('--skip_ycm', action='store_true', default=False,
             help='Skip building YouCompleteMe')
+    parser.add_argument('--iknow', action='store_true', default=False,
+            help='Runs the script instead of giving the warning')
 
     args = parser.parse_args()
+    if not args.iknow:
+        logging.error('Makefile with Ansible is now preferred.')
+        logging.error('Re-run with --iknow to try this outdated script anyway.')
+        return 1
+    if not args.force:
+        ask_about_initial_setup()
+
     tolink = [
              ('bashrc',    '~/.bashrc'),
              ('vimrc',     '~/.vimrc'),
              ('vim',       '~/.vim'),
              ('screenrc',  '~/.screenrc'),
-             ('config',    '~/.config'),
+             #('config',    '~/.config'),
              ('tmux.conf', '~/.tmux.conf'),
-             ('dir_colors','~/.dir_colors'),
+             #('dir_colors','~/.dir_colors'),
             ]
 
     src_folder = os.path.abspath(os.path.join(BASE_DIR, 'src'))
@@ -76,10 +92,10 @@ def main():
     gnomesolarized = os.path.join(BASE_DIR, 'GnomeTerminalSolarized')
     GnomeTerminalSolarized.install_or_update(gnomesolarized)
     with ChdirContextManager(gnomesolarized):
-        subprocess.check_call('./set_dark.sh')
-    #tolink.append( ( os.path.join(solarized_root, 'xresources', 'solarized'),
-    #    os.path.expanduser('~/.Xresources') ) )
-
+        subprocess.check_call(['./install.sh',
+                               '--scheme', 'dark',
+                               '--install-dircolors',
+                               '--profile', 'Solarized'])
 
     logging.info('File installation complete')
     logging.info('Updating vim plugins')
@@ -87,7 +103,8 @@ def main():
     subprocess.check_call('vim +PluginInstall +qall'.split())
     if not args.skip_ycm:
         with ChdirContextManager(os.path.expanduser('~/.vim/bundle/YouCompleteMe')):
-            subprocess.check_call('./install.sh')
+            subprocess.check_call(
+                    './install.py --clang-completer --racer-completer'.split())
 
 def user_says_yes(query):
     answer = input(query)
