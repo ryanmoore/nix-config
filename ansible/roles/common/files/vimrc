@@ -23,12 +23,20 @@ Plug 'altercation/vim-colors-solarized'
 Plug 'Valloric/YouCompleteMe',  { 'do': function('InstallYouCompleteMe') }
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-" Python specific plugins
+
+" Code formatting
+Plug 'Chiel92/vim-autoformat'
+
+" Python
 Plug 'klen/python-mode'
 Plug 'tmhedberg/SimpylFold'
 
-" Rust specific plugins
+" Rust
 Plug 'rust-lang/rust.vim'
+
+" Javascript
+Plug 'pangloss/vim-javascript'
+Plug 'mxw/vim-jsx'
 
 
 call plug#end()
@@ -236,6 +244,9 @@ au FileType c,cpp inoremap $5 {<esc>o};<esc>O
 " in verilog, replace {} with beginend
 au FileType verilog inoremap $4 <esc>^"py$obegin<esc>oend // <esc>"ppO
 
+" Javascript
+au FileType javascript,javascript.jsx inoremap $4 {<esc>o}<esc>O
+
 set guitablabel=%t
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -315,3 +326,27 @@ set splitbelow
 set splitright
 
 autocmd CompleteDone * pclose
+
+"""""""""""""""""""""
+" Code autoformatting
+"""""""""""""""""""""
+
+nnoremap <C-k> :Autoformat<CR>
+
+""""""""""""""""""""
+" Syntastic checking
+""""""""""""""""""""
+
+" allow lnext and lprev to automatically be populated
+let g:syntastic_always_populate_loc_list = 1
+nnoremap ]n :lnext<CR>
+nnoremap ]p :lprev<CR>
+
+"let g:formatters_javascript = ['clangformat']
+let g:syntastic_javascript_checkers = ['eslint']
+let g:syntastic_json_checker = ['jsonlint']
+
+""""""""""""""""""""
+" Javascript
+""""""""""""""""""""
+let g:jsx_ext_required = 0

@@ -5,24 +5,27 @@ set nocompatible
 set t_Co=16
 set cursorline
 set colorcolumn=80
-filetype off
 
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+function! InstallYouCompleteMe(info)
+    if a:info.status == 'installed' || a:info.force
+        !./install.py --clang-completer --racer-completer
+    endif
+endfunction
 
-"Vundle
-"""""""
-Plugin 'gmarik/Vundle.vim'
-Plugin 'scrooloose/syntastic'
-Plugin 'bling/vim-airline'
-Plugin 'altercation/vim-colors-solarized'
-Plugin 'Valloric/YouCompleteMe'
-Plugin 'kien/ctrlp.vim'
-Plugin 'rust-lang/rust.vim'
+""""""""""
+"vim-plug
+""""""""""
+call plug#begin('~/.vim/plugged')
 
-call vundle#end()
-filetype plugin indent on
+Plug 'scrooloose/syntastic'
+Plug 'bling/vim-airline'
+Plug 'altercation/vim-colors-solarized'
+Plug 'Valloric/YouCompleteMe',  { 'do': function('InstallYouCompleteMe') }
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+Plug 'rust-lang/rust.vim'
+
+call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General
@@ -108,7 +111,7 @@ syntax on
 "let g:solarized_termcolors=256
 set t_Co=256 
 set background=dark
-colorscheme solarized
+silent! colorscheme solarized
 
 set encoding=utf8
 
@@ -373,3 +376,4 @@ map <C-n> :NERDTreeToggle<CR>
 
 map <leader>n :bn<cr>
 map <leader>p :bp<cr>
+map <C-p> :FZF<cr>

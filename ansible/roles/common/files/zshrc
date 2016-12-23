@@ -54,6 +54,9 @@ COMPLETION_WAITING_DOTS="true"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(gitfast vi-mode pip virtualenv)
 
+NVM_LAZY_LOAD=true
+plugins+=(zsh-nvm)
+
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
@@ -103,3 +106,5 @@ export PATH="$HOME/.cargo/bin:$PATH"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 source /usr/local/bin/virtualenvwrapper.sh
+
+nvm use default
