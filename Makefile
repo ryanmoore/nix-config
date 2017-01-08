@@ -13,7 +13,7 @@ help:
 
 ubuntu:
 	@echo "Installing minimum set of apps needed for ansible"
-	apt install pip libssl-dev build-essential
+	apt install python-pip libssl-dev build-essential
 	pip install ansible
 	@echo
 	@echo "IMPORTANT: Create a Gnome Terminal profile called \"Solarized\""
