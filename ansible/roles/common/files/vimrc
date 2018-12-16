@@ -17,20 +17,49 @@ endfunction
 """"""""""
 call plug#begin('~/.vim/plugged')
 
-" Plug 'scrooloose/syntastic', { 'on': [] }
-Plug 'w0rp/ale'
 Plug 'bling/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'altercation/vim-colors-solarized'
-" Plug 'Valloric/YouCompleteMe',  { 'do': function('InstallYouCompleteMe') }
+
+" Faster ctrl-p (fuzzy file searching)
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'prabirshrestha/async.vim'
-Plug 'prabirshrestha/vim-lsp'
-Plug 'prabirshrestha/asyncomplete-lsp.vim'
+
+"""""" Linting
+" Old faithful
+" Plug 'scrooloose/syntastic', { 'on': [] }
+
+" async
+Plug 'w0rp/ale'
+
+"""""" End linting
+
+"""""" Ever changing completion plugin
+
+" Trying dark powered
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plug 'Shougo/deoplete.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+endif
+let g:deoplete#enable_at_startup = 1
+
+" Old faithful
+" Plug 'Valloric/YouCompleteMe',  { 'do': function('InstallYouCompleteMe') }
+
+" Not sure why I picked this set over deoplete but at some point I did (maybe
+" before being a neovim convert?)
+" Plug 'prabirshrestha/asyncomplete.vim'
+" Plug 'prabirshrestha/async.vim'
+" Plug 'prabirshrestha/vim-lsp'
+" Plug 'prabirshrestha/asyncomplete-lsp.vim'
+
+""""""" End completion
+
+" github linking
 Plug 'ruanyl/vim-gh-line'
-"Plug 'yami-beta/asyncomplete-omni.vim'
 
 " Git
 Plug 'tpope/vim-fugitive'
