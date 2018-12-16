@@ -137,7 +137,9 @@ export GIT_EDITOR=vim
 export VISUAL=vim
 alias tmux="TERM=screen-256color-bce tmux"
 
-source $HOME/.pathsetup
+if [ -e $HOME/.pathsetup ]; then
+    source $HOME/.pathsetup
+fi
 
 dircolorpath="$HOME/.dir_colors/dircolors"
 if [ -e $dircolorpath ]; then
