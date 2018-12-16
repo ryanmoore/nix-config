@@ -1,5 +1,21 @@
 ---
 
+- name: Specify vim autoload directory
+  set_fact:
+      vim_autoload_dir: '~/.local/share/nvim/site/autoload/'
+
+- name: Specify config directory
+  set_fact:
+      vim_config_dir: '~/.config/nvim'
+
+- name: Specify vim init file
+  set_fact:
+      vim_init_file: '{{ vim_config_dir }}/init.vim'
+
+- name: Specify sentinel vim plugin
+  set_fact:
+      vim_sentinel_plugin: '~/.vim/plugged/vim-colors-solarized'
+
 - name: install required packages
   package:
       name: "{{ item }}"
@@ -7,26 +23,42 @@
   become: true
   become_user: root
   with_items:
-      - vim
       - build-essential
       - cmake
       - python-dev
       - python3-dev
       - git-core
 
-- name: Specify vim autoload directory
-  set_fact:
-      vim_autoload_dir: '~/.vim/autoload'
+- name: Download neovim appimage
+  get_url:
+    url: https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
+    dest: /tmp/nvim.appimage
+    mode: 0755
+
+
+- name: install neovim
+  copy:
+    src: /tmp/nvim.appimage
+    dest: /usr/local/bin/nvim
+    remote_src: true
+    mode: 0755
+  become: true
+  become_user: root
 
 - name: Make sure {{ vim_autoload_dir }} exists
   file:
       path: "{{ vim_autoload_dir }}"
       state: directory
+
+- name: Make sure {{ vim_config_dir }} exists
+  file:
+      path: "{{ vim_config_dir }}"
+      state: directory
   
 - name: link vimrc
   file:
       src: "{{ role_path }}/files/vimrc"
-      dest: "~/.vimrc"
+      dest: "{{ vim_init_file }}"
       state: link
 
 - name: install vim-plug
@@ -38,21 +70,27 @@
 # below (as far as I could get to work). Without the -E/-u/-S options, it was
 # hanging
 - name: install vim plugins
-  shell: vim -E -u NONE -S ~/.vimrc +PlugInstall +qall > /tmp/debug.log || true
+  shell: nvim -E -u NONE -S {{ vim_init_file }} +PlugInstall +qall > /tmp/debug.log || true
 
 # The ||true above masks any errors (vim returns 1 in the above case even on 
 # apparent success). So look up a directory and fail if it does not exist.
 # Choice of syntastic is arbitrary as opposed to checking all plugins which
 # would then need to be kept in sync with vimrc
+
 - name: Look for vim plugin install evidence
   stat:
-      path: /home/ryan/.vim/plugged/syntastic
+      path: "{{ vim_sentinel_plugin }}"
   register: synst
 
-- name: Check that a single vim plugin installed (syntastic)
+- name: Check that a single vim plugin installed
   fail:
-      msg: "Vim Plugins failed to install. Couldn't find ~/.vim/plugged/syntastic"
+      msg: "Vim Plugins failed to install. Couldn't find {{ vim_sentinel_plugin }}"
   when: not synst.stat.exists
+
+- name: Make sure ~/.vim exists
+  file:
+      path: "~/.vim"
+      state: directory
 
 - name: Link vim templates
   file:
