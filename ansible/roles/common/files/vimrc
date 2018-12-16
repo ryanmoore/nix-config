@@ -46,6 +46,9 @@ else
 endif
 let g:deoplete#enable_at_startup = 1
 
+Plug 'zchee/deoplete-jedi'
+" Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
+
 " Old faithful
 " Plug 'Valloric/YouCompleteMe',  { 'do': function('InstallYouCompleteMe') }
 
@@ -113,7 +116,7 @@ let g:mapleader = ","
 nmap <leader>w :w!<cr>
 
 "when vimrc is edited, reload it
-autocmd! bufwritepost vimrc source ~/.vimrc
+" autocmd! bufwritepost vimrc source ~/.vimrc
 
 "Save and restore things like folds
 au BufWinLeave * silent! mkview
