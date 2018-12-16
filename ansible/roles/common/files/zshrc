@@ -93,18 +93,21 @@ export GIT_EDITOR=vim
 export VISUAL=vim
 alias tmux="TERM=screen-256color-bce tmux"
 
-source $HOME/.pathsetup
-
 dircolorpath="$HOME/.dir_colors/dircolors"
 if [ -e $dircolorpath ]; then
     eval `dircolors $dircolorpath`
 fi
-PATH="$HOME/bin:$HOME/.local/bin:$PATH"
-
-export PATH="$HOME/.cargo/bin:$PATH"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-source /usr/local/bin/virtualenvwrapper.sh
+virtualenvscript="/usr/local/bin/virtualenvwrapper.sh"
+if [ -e $virtualenvscript ]; then
+    source $virtualenvscript
+fi
+
+PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+export PATH="$HOME/.cargo/bin:$PATH"
+export NVM_DIR="/home/ryan/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
 nvm use default
