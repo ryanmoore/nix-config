@@ -17,19 +17,32 @@ endfunction
 """"""""""
 call plug#begin('~/.vim/plugged')
 
-Plug 'scrooloose/syntastic'
+" Plug 'scrooloose/syntastic', { 'on': [] }
+Plug 'w0rp/ale'
 Plug 'bling/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 Plug 'altercation/vim-colors-solarized'
-Plug 'Valloric/YouCompleteMe',  { 'do': function('InstallYouCompleteMe') }
+" Plug 'Valloric/YouCompleteMe',  { 'do': function('InstallYouCompleteMe') }
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/async.vim'
+Plug 'prabirshrestha/vim-lsp'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
+Plug 'ruanyl/vim-gh-line'
+"Plug 'yami-beta/asyncomplete-omni.vim'
+
+" Git
+Plug 'tpope/vim-fugitive'
 
 " Code formatting
 Plug 'Chiel92/vim-autoformat'
 
 " Python
-Plug 'klen/python-mode'
-Plug 'tmhedberg/SimpylFold'
+" Plug 'python-mode/python-mode'
+" Plug 'tmhedberg/SimpylFold'
+Plug 'vim-python/python-syntax'
+Plug 'Vimjas/vim-python-pep8-indent'
 
 " Rust
 Plug 'rust-lang/rust.vim'
@@ -37,6 +50,9 @@ Plug 'rust-lang/rust.vim'
 " Javascript
 Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx'
+
+" Scala
+Plug 'derekwyatt/vim-scala'
 
 
 call plug#end()
@@ -123,7 +139,7 @@ set shell=/bin/bash
 syntax on
 "let g:solarized_termcolors=256
 set t_Co=256 
-set background=dark
+set background=light
 colorscheme solarized
 
 set encoding=utf8
@@ -319,6 +335,7 @@ map <C-n> :NERDTreeToggle<CR>
 
 map <leader>n :bn<CR>
 map <leader>p :bp<CR>
+map <leader>q :sp $devlog<CR>
 map <C-p> :FZF<CR>
 
 " Adjust default split direction to what feels more natural
@@ -326,6 +343,9 @@ set splitbelow
 set splitright
 
 autocmd CompleteDone * pclose
+
+
+au BufNewFile,BufRead SCons* set filetype=python
 
 """""""""""""""""""""
 " Code autoformatting
@@ -346,7 +366,100 @@ nnoremap ]p :lprev<CR>
 let g:syntastic_javascript_checkers = ['eslint']
 let g:syntastic_json_checker = ['jsonlint']
 
+" Python pymode
+let g:pymode_lint_checkers = ['flake8']
+
+""""""""""""""""""""
+" Ale checking
+""""""""""""""""""""
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%linter%] [%severity%] %s'
+
+let g:ale_linters = {
+\   'python': ['flake8'],
+\}
+
 """"""""""""""""""""
 " Javascript
 """"""""""""""""""""
 let g:jsx_ext_required = 0
+
+""""""""""""""""""""
+" Python
+""""""""""""""""""""
+
+"Don't automatically trim whitespace else can cause unintentially version
+"control diffs
+let g:pymode_trim_whitespaces = 0
+
+"vim-lsp should account for rope now
+let g:pymode_rope = 0
+
+let g:python_highlight_all = 1
+
+""""""""""""""""""""
+" YCM
+""""""""""""""""""""
+let g:ycm_server_python_interpreter = '/usr/bin/python'
+
+" jump to definition
+"nnoremap <C-]> :YcmCompleter GoTo<CR>
+"nnoremap <leader>/ :YcmCompleter GetDoc<CR>
+
+"""""""""""""""""""
+" Template files
+"""""""""""""""""""
+autocmd! BufNewFile * silent! 0r ~/.vim/templates/tmp1.%:e
+
+""""""""""""""""""
+" Theme
+""""""""""""""""""
+let g:airline_theme='solarized'
+
+set clipboard=unnamedplus
+
+let g:airline#extensions#ale#enabled = 1
+
+""""""""""""""""""""
+" vim language server
+""""""""""""""""""""
+if executable('pyls')
+    " pip install python-language-server
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'pyls',
+        \ 'cmd': {server_info->['pyls']},
+        \ 'whitelist': ['python'],
+        \ })
+endif
+nnoremap <C-]> :LspDefinition<CR>
+
+""""""""""""""""""""
+" async complete
+""""""""""""""""""""
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<cr>"
+imap <C-Space> <Plug>(asyncomplete_force_refresh)
+
+" let g:lsp_log_verbose = 1
+" let g:lsp_log_file = '/tmp/vim-lsp.log'
+" let g:asyncomplete_log_file = '/tmp/asyncomplete.log'
+
+"call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
+"  \ 'name': 'omni',
+"  \ 'whitelist': ['*'],
+"  \ 'blacklist': ['c', 'cpp', 'html'],
+"  \ 'completor': function('asyncomplete#sources#omni#completor')
+"  \  }))
+"
+"autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+"
+let g:lsp_async_completion = 1
+autocmd FileType python setlocal omnifunc=lsp#complete
+
+""""""""""""""""""""""""""""""
+" Opening github links to code
+""""""""""""""""""""""""""""""
+
+let g:gh_open_command = 'google-chrome '
