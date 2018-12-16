@@ -7,4 +7,4 @@
 
 
 - name: Install GnomeTerminalSolarized dark theme to Solarized profile
-  command: /tmp/GnomeTerminalSolarized/install.sh --scheme dark --install-dircolors --profile Solarized
+  command: /tmp/GnomeTerminalSolarized/install.sh --scheme light --install-dircolors --profile Solarized
