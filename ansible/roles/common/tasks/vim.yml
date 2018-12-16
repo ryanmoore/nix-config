@@ -28,6 +28,13 @@
       - python-dev
       - python3-dev
       - git-core
+      - python3-pip
+      - python3-venv
+
+- pip:
+    name: pynvim
+    extra_args: --user
+    executable: pip3
 
 - name: Download neovim appimage
   get_url:
