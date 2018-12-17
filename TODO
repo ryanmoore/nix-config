@@ -1,0 +1,9 @@
+# Pyenv
+
+git clone https://github.com/pyenv/pyenv-virtualenv.git $(pyenv root)/plugins/pyenv-virtualenv
+git clone https://github.com/pyenv/pyenv.git ~/.pyenv
+
+and moved a bunch to zshenv
+
+# zsh setup
+clone agnoster theme to support white background
