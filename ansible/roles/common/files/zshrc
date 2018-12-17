@@ -9,6 +9,8 @@
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
 #ZSH_THEME="robbyrussell"
 ZSH_THEME="agnoster"
+PRIMARY_FG="white"
+
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -99,15 +101,3 @@ if [ -e $dircolorpath ]; then
 fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-virtualenvscript="/usr/local/bin/virtualenvwrapper.sh"
-if [ -e $virtualenvscript ]; then
-    source $virtualenvscript
-fi
-
-PATH="$HOME/bin:$HOME/.local/bin:$PATH"
-export PATH="$HOME/.cargo/bin:$PATH"
-export NVM_DIR="/home/ryan/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
-
-nvm use default

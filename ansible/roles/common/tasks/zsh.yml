@@ -20,6 +20,12 @@
       dest: "~/.zshrc"
       state: link
 
+- name: Link zshenv
+  file:
+      src: "{{ role_path }}/files/zshenv"
+      dest: "~/.zshenv"
+      state: link
+
 - name: Change default shell
   become: true
   become_user: root
